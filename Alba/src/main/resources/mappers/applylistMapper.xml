@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="green.mapper.ApplylistMapper">
+
+	<select id="applylist" resultType="vo.ApplylistVO">
+		select r.pno, a.ano, n.bname, n.pay, n.typeoccup, n.dow, n.period, n.timetotime, n.region, a.subd, n.deadline
+		from resume r inner join applylist a on r.userno = a.userno 
+		INNER JOIN notice n on a.bno=n.bno order by r.pno;
+	</select>
+
+	<select id="insertApplylist" resultType="Int">
+		insert into applylist values((select ifnull(max(ano), 0)+1 from applylist a),#{kno},#{bno},#{userno},DATE_FORMAT(now(), '%Y-%m-%d %H:%i:%s'),'대기')
+	</select>
+
+	<select id="deleteApplylist" resultType="Int">
+		delete from applylist where ano=#{ano}
+	</select>
+
+	<select id="checkApplylist" resultType="Int">
+		select count(*) from resume r, applylist a where r.userno=a.userno and r.pno=#{pno} and a.bno=#{bno}
+	</select>
+
+	<select id="applyKing" resultType="vo.ApplylistVO">
+		select a.ano, n.typeoccup, r.userno,a.bno, r.pname,r.age,r.gender,r.phone,a.kno,a.passcheck from resume r, applylist a, notice n where r.userno=a.userno and a.bno=n.bno order by r.pname
+	</select>
+
+	<select id="resultPass" resultType="vo.ApplylistVO">
+		select a.kno, a.ano, r.pno, n.mainimage, n.bname, n.typeoccup, n.region, n.deadline, a.passcheck from applylist a, notice n, resume r where a.bno=n.bno and r.userno = a.userno
+	</select>
+	
+	<update id="selectPass">
+		update applylist set passcheck='합격' where userno=#{userno} and ano=#{ano}
+	</update>
+	
+	<update id="selectFail">
+		update applylist set passcheck='불합격' where userno=#{userno} and ano=#{ano}
+	</update>
+	
+</mapper>

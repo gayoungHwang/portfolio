@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="green.mapper.ResumeMapper">
+  
+  <select id="resumelist" resultType="vo.ResumeVO">
+      select * from resume order by userno;
+  </select>
+  
+  <select id="insertResume" resultType="Int">
+     insert into resume values((select ifnull(max(userno), 0)+1 from resume r),#{title},#{pno},#{pname},#{age},#{gender},#{phone},#{academic},#{career},#{typeoccup},#{period},#{dow},#{timetotime},#{region},#{uploadfile},#{addr},#{selfinfo})
+  </select>
+  
+  <select id="updateResume" resultType="Int">
+      update resume set title=#{title}, uploadfile=#{uploadfile},pname=#{pname},age=#{age},gender=#{gender},phone=#{phone},academic=#{academic},career=#{career},typeoccup=#{typeoccup},period=#{period},dow=#{dow},timetotime=#{timetotime},addr=#{addr},region=#{region},selfinfo=#{selfinfo} where userno=#{userno}
+  </select>
+  
+  <select id="deleteResume" resultType="Int">
+     delete from resume where userno=#{userno}
+  </select>
+  
+  <select id="detailResume" resultType="vo.ResumeVO">
+      select * from resume where userno=#{userno}
+  </select>
+  
+  <select id="totalrowCount" resultType="integer">
+      select count(*) from resume
+  </select>
+
+  <select id="pageList" resultType="vo.ResumeVO">
+      select title, pname, age,gender,phone, addr,academic,career,typeoccup,period,dow,timetotime,region from resume order by userno desc limit #{sno},15
+  </select>
+
+  <select id="searchList" resultType="vo.ResumeVO">
+      select r.userno, r.title, r.pname, r.age,r.gender,r.phone,r.addr,r.academic, r.career, r.typeoccup, r.period, r.dow, r.timetotime, r.region 
+      from resumeview v, resume r 
+	  where v.userno=r.userno and text REGEXP #{search}
+      order by userno desc limit #{sno},15
+  </select>
+ 
+</mapper>

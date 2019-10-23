@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="green.mapper.mentMapper">
+
+
+	<select id="mentCount" resultType="int">
+		select count(*) from ment
+	</select>
+
+	<select id="mentList" resultType="vo.MentVO">
+		select m.mno,p.pid,m.content,m.regdate,m.seq from partimer p inner join ment m on p.pno=m.pno order by m.mno
+	</select>
+
+	<insert id="mentInsert">
+		insert into ment values((select ifnull(max(mno),0)+1 from ment m),#{pno},#{content}, DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s'),#{seq})
+	</insert>
+
+	<update id="mentUpdate">
+		update ment set content=#{content} where mno = #{mno}
+	</update>
+
+	<delete id="mentDelete">
+		delete from ment where mno = #{mno}
+	</delete>
+
+</mapper>

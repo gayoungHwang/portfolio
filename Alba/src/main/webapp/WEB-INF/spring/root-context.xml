@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.2.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- 데이터베이스 연결 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource"> 
+	<property name="driverClassName" value="com.mysql.jdbc.Driver"/> 
+	<property name="url" value="jdbc:mysql://127.0.0.1:3306/alba??useUnicode=true&amp;characterEncoding=utf8"/> 
+	<property name="username" value="root"/> 
+	<property name="password" value="1234"/> 
+	</bean>
+	
+	<!-- sqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+	  	<!-- MyBatis 설정 파일의 위치를 지정  : 스프링 동작시 같이 동작 하도록 --> 
+	  	<property name="configLocation" value="classpath:/mybatis-config.xml" /> 
+	  	<!-- SQL 파일의 위치를 지정합니다. --> 
+	  	<property name="mapperLocations" value="classpath:/mappers/**/*Mapper.xml" /> 
+	  	 <!-- mappers 폴더내의 모든 폴더의 *Mapper.xml 을 인식하도록 해줌 -->
+	</bean> 
+	
+	<!-- SqlSessionTemplate DB연결 & Close -->
+	<!-- sqlSessionFactory 를 생성자로 주입해서 설정 -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+	 	<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean> 
+	
+<!-- 1. Transaction 설정 -->
+	<!-- 트랜잭션 관리자 클래스 등록: 
+			=> plattformTransactionManager 인터페이스를 구현한 클래스 
+			=> commit, rollback 지원-->
+	<!-- namespaces의 tx 체크 -->
+	 <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>  <!-- 데이터베이스 연결에 있는 id를 적은 것 -->
+	</bean> 
+	
+	<!-- 2.Transaction 관리 Advice 설정 -->
+	<!--  => 스프링컨테이너가 <tx:advice> 설정을 참조하여 자동으로 생성 -->
+	<!-- <tx:advice id="txAdvice" transaction-manager="txManager"> 
+		<tx:attributes>
+			<tx:method name="sel*" read-only="true"/>
+			<tx:method name="*" rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+	 -->
+	
+	<!-- 3. AOP 설정 -->
+	<!--<aop:config>
+		<aop:pointcut id="txPointcut"
+				 expression="execution(* com.ncs.green.*.mjoin(..))"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+	</aop:config> -->
+	
+	 
+<!--스프링시큐리티 라이브러리 BcryptPasswordEncoder -->
+	
+<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	
+	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView" />
+        <property name="order" value="2" />
+    </bean>  
+	
+	
+<context:component-scan base-package="com.ncs.green, business"></context:component-scan>
+	
+</beans>

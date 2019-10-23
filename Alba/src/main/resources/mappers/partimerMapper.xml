@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="green.mapper.PartimerMapper">
+
+	<select id="totalrowCount" resultType="integer">
+		select count(*) from partimer
+	</select>
+
+	<select id="loginPartimer" resultType="vo.PartimerVO">
+		select * from partimer where pid=#{pid} and ppw=#{ppw}
+	</select>
+
+	<select id="insertPartimer" resultType="vo.PartimerVO">
+		insert into partimer values((select ifnull(max(pno), 0)+1 from partimer
+		p),#{pid},#{ppw},#{pname},#{age},#{gender},#{phone},#{email},'false',#{approval_key})
+	</select>
+
+	<select id="deletePartimer" resultType="Int">
+		delete from partimer where pid=#{pid}
+	</select>
+
+	<select id="updatePartimer" resultType="Int">
+		update partimer set ppw=#{ppw},pname=#{pname}, age=#{age}, gender=#{gender},
+		phone=#{phone}, email=#{email} where pid=#{pid}
+	</select>
+
+	<select id="selectDetail" resultType="vo.PartimerVO">
+		select * from partimer where pid=#{pid}
+	</select>
+
+	<select id="find_pid" parameterType="String" resultType="String">
+		select pid from partimer where email = #{email}
+	</select>
+
+	<update id="update_ppw" parameterType="vo.PartimerVO">
+		update partimer set ppw = #{ppw} where pid = #{pid}
+	</update>
+
+	<!-- <select id="login" parameterType="String"
+		resultType="vo.PartimerVO">
+		select * from partimer where pid = #{pid}
+	</select> -->
+
+	<select id="check_pid" parameterType="String" resultType="int">
+		select count(*) from partimer where pid = #{pid}
+	</select>
+
+	<select id="partimerlist" resultType="vo.PartimerVO">
+		select * from partimer order by pid=#{pid}
+	</select>
+
+	<select id="pageList" resultType="vo.PartimerVO">
+		select pid,pname,age,gender,email from partimer order by pno desc limit #{sno},30
+	</select>
+
+	<select id="searchList" resultType="vo.PartimerVO">
+		select p.pno, p.pid, p.pname, p.age, p.gender, p.email
+		from partimerview v, partimer p
+		where v.pno=p.pno and text REGEXP #{search}
+		order by pno desc limit #{sno},30
+	</select>
+
+    <update id="approval_partimer" parameterType="vo.PartimerVO">
+    	update partimer set approval_status ='true' where email = #{email} and approval_key = #{approval_key}
+    </update>
+
+    <select id="check_email" parameterType="String" resultType="int">
+		select count(*) from partimer where email = #{email}
+	</select>
+	
+	
+</mapper>

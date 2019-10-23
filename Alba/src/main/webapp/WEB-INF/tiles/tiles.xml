@@ -1,0 +1,58 @@
+<!DOCTYPE tiles-definitions PUBLIC
+  "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+  "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+	
+	<definition name="layout"
+		template="/WEB-INF/tiles/layout/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/tiles/tile/mainheader.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/tiles/tile/footer.jsp" />
+	</definition>
+
+	<definition name="layout/*" extends="layout">
+		<put-attribute name="content" value="/WEB-INF/views/{1}.jsp" />
+	</definition>
+	<definition name="layout/*/*" extends="layout">
+		<put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp" />
+	</definition>
+
+	<definition name="layout2" template="/WEB-INF/tiles/layout/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/tiles/tile/pheader.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/tiles/tile/footer.jsp" />
+	</definition>
+
+	<definition name="layout2/*" extends="layout2">
+		<put-attribute name="content" value="/WEB-INF/views/{1}.jsp" />
+	</definition>
+
+	<definition name="layout2/*/*" extends="layout2">
+		<put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp" />
+	</definition>
+
+	<definition name="layout3" template="/WEB-INF/tiles/layout/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/tiles/tile/kheader.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/tiles/tile/footer.jsp" />
+	</definition>
+
+	<definition name="layout3/*" extends="layout3">
+		<put-attribute name="content" value="/WEB-INF/views/{1}.jsp" />
+	</definition>
+	<definition name="layout3/*/*" extends="layout3">
+		<put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp" />
+	</definition>
+
+	<definition name="layout4" template="/WEB-INF/tiles/layout/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/tiles/tile/adminheader.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/tiles/tile/footer.jsp" />
+	</definition>
+
+	<definition name="layout4/*" extends="layout4">
+		<put-attribute name="content" value="/WEB-INF/views/{1}.jsp" />
+	</definition>
+
+	<definition name="layout4/*/*" extends="layout4">
+		<put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp" />
+	</definition>
+
+</tiles-definitions>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="green.mapper.ReservationMapper">
+   <select id="reservationList" resultType="vo.ReservationVO">
+       select r.rno,r.pno,r.ano,a.kno,p.pname, r.rtime, r.writing, r.state,r.day,p.phone from partimer p, reservation r, applylist a where p.pno=r.pno and a.ano=r.ano and a.kno=#{kno}
+    </select>
+
+    <!-- SelectOne -->	
+    <select id="detailReservation" resultType="vo.ReservationVO">
+   		select re.rno, r.pno, a.ano, n.bname,r.pname,r.phone, re.rtime, re.state, re.day, re.writing from reservation re, applylist a, resume r, notice n 
+   		where re.ano=a.ano and a.userno=r.userno and a.bno=n.bno and r.pno=#{pno} and a.ano=#{ano}
+	</select>
+	
+	<select id="checkReservation" resultType="Int">
+		select count(*) from reservation where ano=#{ano}
+	</select>
+	
+	<select id="checkReservation2" resultType="Int">
+		select count(*) from reservation where day=#{day} and rtime=#{rtime}
+	</select>
+	
+	<select id="listCount" resultType="Integer">
+       select count(*) from reservation
+	</select>
+	
+	<insert id="insertReservation">
+	    insert into reservation values((select ifnull(max(rno), 0)+1 from reservation r),#{pno},#{ano},#{rtime},#{writing},'대기',#{day})
+	</insert>
+	
+	<delete id="deleteReservation">
+		delete from reservation where rno=#{rno}
+	</delete>		
+	
+	<update id="selectApproval">
+		update reservation set state='승인' where rno=#{rno}
+	</update>
+	
+	<update id="selectRefuse">
+		update reservation set state='거부' where rno=#{rno}
+	</update>
+	
+	
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="green.mapper.CpboardMapper">
+
+	<select id="totalrowCount" resultType="integer">
+		select count(*) from cpboard
+	</select>
+
+	<select id="pageList" resultType="vo.CpboardVO">
+		select c.seq,c.title,p.pno,p.pid,c.cnt, c.regdate, (SELECT COUNT(*) FROM ment WHERE seq=c.seq) AS mcnt from cpboard c INNER JOIN partimer p on p.pno=c.pno order by c.seq desc limit #{sno},15
+	</select>
+
+	<select id="selectList" resultType="vo.CpboardVO">
+		select c.seq,c.title,p.pid,c.cnt,c.regdate from partimer p INNER JOIN cpboard c on p.pno=c.pno
+	</select>
+
+	<select id="selectDetail" resultType="vo.CpboardVO">
+		select c.seq,c.title,c.content,c.cnt,c.regdate,p.pid from partimer p INNER JOIN cpboard c on p.pno=c.pno where seq=#{seq}
+	</select>
+
+	<insert id="insertBoard">
+		insert into cpboard values((select ifnull(max(seq),0)+1 from cpboard c),#{pno},#{title},#{content},0, DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s'))
+	</insert>
+
+	<update id="updateBoard">
+		update cpboard set title=#{title}, content=#{content} where seq=#{seq}
+	</update>
+
+	<delete id="deleteBoard">
+		delete from cpboard where seq=#{seq}
+	</delete>
+
+	<update id="countUp">
+		update cpboard set cnt=cnt+1 where seq=#{seq}
+	</update>
+
+	<select id="searchList" resultType="vo.CpboardVO">
+    	select c.seq, c.title, p.pid , c.regdate from cpboard c
+		INNER JOIN partimer p
+		on c.pno=p.pno
+		INNER JOIN cpboardview v
+		on c.seq= v.seq where v.seq=c.seq and text REGEXP #{search}
+		order by seq desc limit ${sno},15
+	</select>
+
+
+
+</mapper> 

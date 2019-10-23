@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="green.mapper.NoticeMapper">
+
+  <select id="noticelist" resultType="vo.NoticeVO">
+      select mainimage, bno,kno,bname,pay, typeoccup, period, dow, timetotime, region, deadline from notice order by bno
+  </select>
+  
+  <select id="mainnoticelist" resultType="vo.NoticeVO">
+     select mainimage, bno,kno,bname,pay, typeoccup, period, dow, timetotime, SUBSTRING_INDEX(region, ' ', 2) as region, deadline from notice order by bno desc limit 80;
+  </select>
+   
+  <select id="insertNotice" resultType="vo.NoticeVO">
+     insert into notice values((select ifnull(max(bno), 0)+1 from notice n),#{kno},#{pay},#{timetotime},#{etc},#{typeoccup},#{period},#{dow},#{region},#{keyword1},#{keyword2},#{keyword3},#{mainimage},#{deadline},#{bname});
+  </select>
+  
+  <select id="deleteNotice" resultType="vo.NoticeVO">
+     delete from notice where bno=#{bno}
+  </select>
+  
+   <select id="updateNotice" resultType="vo.NoticeVO">
+     update notice set bname=#{bname},pay=#{pay},timetotime=#{timetotime},etc=#{etc},typeoccup=#{typeoccup},period=#{period},dow=#{dow},region=#{region},keyword1=#{keyword1},keyword2=#{keyword2},keyword3=#{keyword3},mainimage=#{mainimage},deadline=#{deadline} where bno=#{bno};
+  </select>
+
+  <select id="selectDetail" resultType="vo.NoticeVO">
+    select * from notice where bno=#{bno}
+  </select>
+  
+  <select id="totalrowCount" resultType="integer">
+   select count(*) from notice
+  </select>
+
+
+  <select id="pageList" resultType="vo.NoticeVO">
+   select mainimage, bno, bname, pay, typeoccup, period, dow, timetotime, region,deadline from notice order by bno desc limit #{sno},15
+  </select>
+
+  <select id="searchList" resultType="vo.NoticeVO">
+   select n.bno, n.bname, n.pay, n.typeoccup, n.period, n.dow, n.timetotime, n.region, n.deadline 
+   from noticeview v, notice n 
+   where v.bno=n.bno and text REGEXP #{search}
+   order by bno desc limit #{sno},15
+  </select>
+  
+</mapper>

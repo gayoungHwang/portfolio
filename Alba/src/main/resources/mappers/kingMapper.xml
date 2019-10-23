@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="green.mapper.KingMapper">
+
+	<select id="loginKing" resultType="vo.KingVO">
+		select * from king where kid=#{kid} and kpw=#{kpw}
+	</select>
+
+	<select id="insertKing" resultType="vo.KingVO">
+		insert into king values((select ifnull(max(kno), 0)+1 from king k),#{kid},#{kpw},#{kname},#{bname},#{bNumber},#{addr},#{email},'false',#{approval_key})
+	</select>
+
+	<select id="deleteKing" resultType="vo.KingVO">
+		delete from king where kid=#{kid}
+	</select>
+
+	<select id="selectDetail" resultType="vo.KingVO">
+		select * from king where kid=#{kid}
+	</select>
+
+	<select id="updateKing" resultType="Int">
+		update king set kpw=#{kpw},kname=#{kname}, bname=#{bname}, bNumber=#{bNumber}, addr=#{addr}, email=#{email} where kid=#{kid}
+	</select>
+
+	<select id="find_kid" parameterType="String" resultType="String">
+		select kid from king where email = #{email}
+	</select>
+
+	<update id="update_kpw" parameterType="vo.KingVO">
+		update king set kpw = #{kpw} where kid = #{kid}
+	</update>
+
+	<select id="login" parameterType="String" resultType="vo.KingVO">
+		select * from king where kid = #{kid}
+	</select>
+
+	<select id="check_kid" parameterType="String" resultType="int">
+		select count(*) from king where kid = #{kid}
+	</select>
+
+	<select id="kingList" resultType="vo.KingVO">
+		select * from king order by kno= #{kno}
+	</select>
+	
+	<select id="pageList" resultType="vo.KingVO">
+		select kid,kname,bname,bNumber,email from king order by kno desc limit #{sno},30
+	</select>
+
+	<select id="searchList" resultType="vo.KingVO">
+		select k.kno, k.kid, k.kname, k.bname, k.bNumber, k.email
+		from kingview v, king k
+		where v.kno=k.kno and text REGEXP #{search}
+		order by kno desc limit #{sno},30
+	</select>
+	
+	<select id="totalrowCount" resultType="integer">
+		select count(*) from king
+	</select>
+
+	<select id="check_email" parameterType="String" resultType="int">
+		select count(*) from king where email = #{email}
+	</select>
+
+	<update id="approval_king" parameterType="vo.KingVO">
+		update king set approval_status ='true' where email = #{email} and approval_key = #{approval_key}
+	</update>
+</mapper>
