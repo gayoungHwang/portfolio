@@ -16,10 +16,10 @@ public interface AService {
    int insert(ApplylistVO vo);
    int delete(ApplylistVO vo);
    
-   // Áö¿ø ¿©ºÎ
+   // ì§€ì› ì—¬ë¶€
    int check_apply(ApplylistVO vo);
    
-   //ÇÕ°İ
+   //í•©ê²©
    int selectPass(ApplylistVO vo);
    int selectFail(ApplylistVO vo);
    
